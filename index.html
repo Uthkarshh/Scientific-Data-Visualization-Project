@@ -1,210 +1,90 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>COVID-19 Cases Distribution</title>
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-      body {
-        background-color: #222;
-        color: #fff;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-      .container {
-        width: 95%;
-        max-width: 1200px;
-        text-align: center;
-      }
-      #map {
-        display: block;
-        width: 100%;
-        height: 500px;
-        margin-top: 10px;
-      }
-      select {
-        width: 49%;
-        padding: 10px;
-        margin: 5px 0;
-        border-radius: 5px;
-        background-color: #444;
-        color: #fff;
-        cursor: pointer;
-      }
-      .tooltip {
-        display: none;
-        position: fixed;
-        background-color: rgba(61, 59, 59, 0.9);
-        padding: 10px;
-        border-radius: 5px;
-        z-index: 10;
-      }
-      .legend {
-        display: inline-block;
-        background: linear-gradient(
-          to top,
-          #f24236,
-          ##fffb46,
-          #efe9e7
-        );
-        width: 20px;
-        height: 100px;
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-      }
-      .legend-labels {
-        display: flex;
-        justify-content: space-between;
-        position: absolute;
-        bottom: 10px;
-        left: 40px;
-      }
-    </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <h2>COVID-19 Interactive Dashboard</h2>
-      <select id="year-select">
-        <option value="2020">2020</option>
-        <option value="2021">2021</option>
-        <option value="2022">2022</option>
-        <option value="2023">2023</option>
-        <option value="2024">2024</option>
-      </select>
-      <select id="metric-select">
-        <option value="total_cases">Total Cases</option>
-        <option value="total_deaths">Total Deaths</option>
-        <option value="icu_patients">ICU Patients</option>
-        <option value="hosp_patients">
-          Hospitalized Patients
-        </option>
-        <option value="people_vaccinated">
-          People Vaccinated
-        </option>
-      </select>
-      <svg id="map"></svg>
-      <div class="legend"></div>
-      <div class="legend-labels">
-        <span>Low</span>
-        <span>High</span>
-      </div>
+        <h1>COVID-19 Interactive Dashboard</h1>
+        <div class="chart-links">
+            <a href="heatmap.html" class="chart-link">View Heatmap</a>
+            <a href="bubblchart.html" class="chart-link">View Bubble Chart</a>
+            <a href="plot3.html" class="chart-link">View Scatter Plot</a>
+        </div>
+        <!-- Tableau Dashboard Embed Code -->
+        <div class="tableau-container">
+            <div class="tableauPlaceholder" id="viz1714155359362" style="position: relative">
+                <noscript>
+                    <a href="#"><img alt="Dashboard 1" src="https://public.tableau.com/static/images/Da/DataVisProject_17141553354700/Dashboard1/1_rss.png" style="border: none" /></a>
+                </noscript>
+                <object class="tableauViz" style="display: none;">
+                    <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+                    <param name="embed_code_version" value="3" />
+                    <param name="site_root" value="" />
+                    <param name="name" value="DataVisProject_17141553354700/Dashboard1" />
+                    <param name="tabs" value="no" />
+                    <param name="toolbar" value="yes" />
+                    <param name="static_image" value="https://public.tableau.com/static/images/Da/DataVisProject_17141553354700/Dashboard1/1.png" />
+                    <param name="animate_transition" value="yes" />
+                    <param name="display_static_image" value="yes" />
+                    <param name="display_spinner" value="yes" />
+                    <param name="display_overlay" value="yes" />
+                    <param name="display_count" value="yes" />
+                    <param name="language" value="en-US" />
+                    <param name="filter" value="publish=yes" />
+                </object>
+            </div>
+            <script type="text/javascript">
+                var divElement = document.getElementById('viz1714155359362');
+                var vizElement = divElement.getElementsByTagName('object')[0];
+                if (divElement.offsetWidth > 800) {
+                    vizElement.style.width = '1300px';
+                    vizElement.style.height = '927px';
+                } else if (divElement.offsetWidth > 500) {
+                    vizElement.style.width = '1300px';
+                    vizElement.style.height = '927px';
+                } else {
+                    vizElement.style.width = '100%';
+                    vizElement.style.height = '1377px';
+                }
+                var scriptElement = document.createElement('script');
+                scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+                vizElement.parentNode.insertBefore(scriptElement, vizElement);
+            </script>
+        </div>
+        <!-- End of Tableau Dashboard Embed Code -->
+        <div id="map-container">
+            <svg id="map"></svg>
+            <div class="legend">
+                <div class="legend-gradient"></div>
+                <div class="legend-labels">
+                    <span>Low</span>
+                    <span>High</span>
+                </div>
+            </div>
+        </div>
+        <div class="tooltip"></div>
+        <div class="controls">
+            <select id="year-select">
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+            </select>
+            <select id="metric-select">
+                <option value="total_cases">Total Cases</option>
+                <option value="total_deaths">Total Deaths</option>
+                <option value="icu_patients">ICU Patients</option>
+                <option value="hosp_patients">Hospitalized Patients</option>
+                <option value="people_vaccinated">People Vaccinated</option>
+            </select>
+        </div>
     </div>
-    <div class="tooltip"></div>
-
-    <script>
-      const width =
-        document.querySelector('#map').clientWidth;
-      const height = 500;
-      let casesByCountry;
-
-      const svg = d3
-        .select('#map')
-        .attr('width', width)
-        .attr('height', height);
-      const projection = d3
-        .geoNaturalEarth1()
-        .scale(width / 6)
-        .translate([width / 2, height / 2]);
-      const path = d3.geoPath().projection(projection);
-
-      const colorScale = d3
-        .scaleLog()
-        .range(['#FFFB46', '#542344'])
-        .interpolate(d3.interpolateHcl);
-
-      d3.json(
-        'https://raw.githubusercontent.com/Uthkarshh/Task-8/main/world.GeoJSON',
-      ).then(function (world) {
-        renderMap(world);
-        d3.select('#year-select').on('change', function () {
-          updateMap(world);
-        });
-        d3.select('#metric-select').on(
-          'change',
-          function () {
-            updateMap(world);
-          },
-        );
-      });
-
-      function renderMap(world) {
-        svg
-          .selectAll('.country')
-          .data(world.features)
-          .enter()
-          .append('path')
-          .attr('class', 'country')
-          .attr('d', path)
-          .attr('fill', '#ccc')
-          .on('mouseover', (event, d) => showTooltip(d))
-          .on('mousemove', (event) => moveTooltip(event))
-          .on('mouseout', hideTooltip);
-
-        updateMap(world); // Initial update
-      }
-
-      function updateMap(world) {
-        const year = d3.select('#year-select').node().value;
-        const metric = d3
-          .select('#metric-select')
-          .node().value;
-        d3.csv(
-          'https://raw.githubusercontent.com/Uthkarshh/Task-8/main/Covid%20Data.csv',
-          function (d) {
-            const date = new Date(d.date);
-            return date.getFullYear().toString() === year
-              ? d
-              : null;
-          },
-        ).then(function (data) {
-          casesByCountry = d3.rollup(
-            data,
-            (v) => d3.mean(v, (d) => +d[metric]),
-            (d) => d.iso_code,
-          );
-          const maxCases = d3.max(
-            Array.from(casesByCountry.values()),
-          );
-          colorScale.domain([1, maxCases]);
-          svg
-            .selectAll('.country')
-            .transition()
-            .duration(500)
-            .attr('fill', (d) => {
-              const cases = casesByCountry.get(d.id);
-              return cases ? colorScale(cases) : '#ccc';
-            });
-        });
-      }
-
-      function showTooltip(d) {
-        const countryData =
-          casesByCountry.get(d.id) || 'No data';
-        d3.select('.tooltip')
-          .html(`${d.properties.name}: ${countryData}`)
-          .style('display', 'block');
-      }
-
-      function moveTooltip(event) {
-        const [x, y] = d3.pointer(event);
-        d3.select('.tooltip')
-          .style('left', `${x + 20}px`)
-          .style('top', `${y + 20}px`);
-      }
-
-      function hideTooltip() {
-        d3.select('.tooltip').style('display', 'none');
-      }
-    </script>
-  </body>
+    <script src="map.js"></script>
+</body>
 </html>
